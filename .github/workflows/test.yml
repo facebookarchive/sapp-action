@@ -27,15 +27,13 @@ jobs:
 
       - name: Set up deliberately_vulnerable_flask_app
         run: |
-          ls
-          pwd
           cd pyre-check/documentation/deliberately_vulnerable_flask_app
-          pwd
           . ./setup.sh
       
       - name: Run Pysa
         # TODO replace with Pysa action later
         run: |
+          cd pyre-check/documentation/deliberately_vulnerable_flask_app
           pyre analyze --no-verify --save-results-to=.
       
       - name: Run SAPP
