@@ -25,7 +25,8 @@ jobs:
 
       - name: Set up deliberately_vulnerable_flask_app
         run: |
-          cd ./pyre-check/documentation/deliberately_vulnerable_flask_app
+          ls
+          cd $GITHUB_WORKSPACE/pyre-check/documentation/deliberately_vulnerable_flask_app
           . ./setup.sh
       
       - name: Run Pysa
