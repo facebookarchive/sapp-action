@@ -27,6 +27,7 @@ jobs:
         run: |
           ls
           cd pyre-check/documentation/deliberately_vulnerable_flask_app
+          pwd
           . ./setup.sh
       
       - name: Run Pysa
@@ -36,7 +37,6 @@ jobs:
       
       - name: Run SAPP
         uses: ./action
-        
       
       - name: Expose SARIF Results
         uses: actions/upload-artifact@v2
