@@ -37,7 +37,7 @@ jobs:
           pyre analyze --no-verify --save-results-to=.
       
       - name: Run SAPP
-        uses: action
+        uses: ./action.yml
       
       - name: Expose SARIF Results
         uses: actions/upload-artifact@v2
