@@ -1,0 +1,3 @@
+[submodule "pyre-check"]
+	path = pyre-check
+	url = https://github.com/facebook/pyre-check.git
