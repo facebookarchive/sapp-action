@@ -18,6 +18,8 @@ jobs:
     steps:
       # Checks-out your repository under $GITHUB_WORKSPACE, so your job can access it
       - uses: actions/checkout@v2
+        with:
+          submodules: true
       - uses: actions/setup-python@v2
 
       - name: Set up Pyre 
@@ -26,6 +28,7 @@ jobs:
       - name: Set up deliberately_vulnerable_flask_app
         run: |
           ls
+          pwd
           cd pyre-check/documentation/deliberately_vulnerable_flask_app
           pwd
           . ./setup.sh
