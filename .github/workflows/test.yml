@@ -35,6 +35,7 @@ jobs:
         run: |
           cd pyre-check/documentation/deliberately_vulnerable_flask_app
           pyre analyze --no-verify --save-results-to=.
+          cat taint-output.json
       
       - name: Run SAPP
         uses: ./action.yml
