@@ -19,13 +19,9 @@ inputs:
 runs:
   using: "composite"
   steps:
-    - run: if [ ${{inputs.version}} = "latest" ]; then pip install fb-sapp; else pip install fb-sapp==${{inputs.version}}; fi
-      shell: bash
-    - run: if [ ! -f ${{inputs.taint-metadata}} ]; then echo "No such file: "${{inputs.taint-metadata}}; exit 1; fi
+    - run: pip install fb-sapp
       shell: bash
     - run: sapp update warning-codes ${{inputs.taint-metadata}}
-      shell: bash
-    - run: if [ ! -f ${{inputs.taint-output}} ]; then echo "No such file: "${{inputs.taint-output}}; exit 1; fi
       shell: bash
     - run: sapp analyze ${{inputs.taint-output}}
       shell: bash
