@@ -34,8 +34,7 @@ jobs:
           cat taint-output.json
       
       - name: Run SAPP
-#         uses: ./action
-        uses: facebook/sapp-action/action@main
+        uses: .github/actions/action@main
       
       - name: Expose SARIF Results
         uses: actions/upload-artifact@v2
