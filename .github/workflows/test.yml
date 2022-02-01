@@ -3,10 +3,6 @@ name: Regression Testing
 on:
   push:
     branches: [ main ]
-  pull_request:
-    branches: [ main ]
-  schedule:
-    - cron: '0 0 * * *'
   workflow_dispatch:
 
 # A workflow run is made up of one or more jobs that can run sequentially or in parallel
@@ -36,6 +32,11 @@ jobs:
           cd pyre-check/documentation/deliberately_vulnerable_flask_app
           pyre analyze --no-verify --save-results-to=.
           cat taint-output.json
+
+      - name: HUH????
+        run: |
+          cwd
+          ls -la
 
       # https://github.com/actions/runner/issues/1300
       - id: sapp
