@@ -35,7 +35,7 @@ jobs:
 
       - name: HUH????
         run: |
-          pwd
+          cwd
           ls -la
 
       - name: Run SAPP
