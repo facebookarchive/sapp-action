@@ -22,32 +22,34 @@ jobs:
           submodules: true
       - uses: actions/setup-python@v2
 
-      - name: Set up Pyre 
+      - name: Set up Pyre
         run: pip install pyre-check
 
       - name: Set up deliberately_vulnerable_flask_app
         run: |
           cd pyre-check/documentation/deliberately_vulnerable_flask_app
           . ./setup.sh
-      
+
       - name: Run Pysa
         # TODO replace with Pysa action later
         run: |
           cd pyre-check/documentation/deliberately_vulnerable_flask_app
           pyre analyze --no-verify --save-results-to=.
           cat taint-output.json
-      
-      - name: Run SAPP
+
+      # https://github.com/actions/runner/issues/1300
+      - id: sapp
+        name: Run SAPP
         uses: ./action.yml
-      
+
       - name: Expose SARIF Results
         uses: actions/upload-artifact@v2
         with:
           name: SARIF Results
-          path: sarif.json
+          # path: sarif.json
+          path: ${{ steps.sapp.outputs.sarif-output }}
 
       - name: Upload SARIF Results
         uses: github/codeql-action/upload-sarif@v1
         with:
           sarif_file: sarif.json
-          
