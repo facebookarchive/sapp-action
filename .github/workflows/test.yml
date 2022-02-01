@@ -32,9 +32,14 @@ jobs:
           cd pyre-check/documentation/deliberately_vulnerable_flask_app
           pyre analyze --no-verify --save-results-to=.
           cat taint-output.json
-      
+
+      - name: HUH????
+        run: |
+          pwd
+          ls -la
+
       - name: Run SAPP
-        uses: .github/actions/action@main
+        uses: ./action
       
       - name: Expose SARIF Results
         uses: actions/upload-artifact@v2
