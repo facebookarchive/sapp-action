@@ -35,7 +35,7 @@ jobs:
 
       - name: HUH????
         run: |
-          cwd
+          pwd
           ls -la
 
       # https://github.com/actions/runner/issues/1300
