@@ -17,7 +17,6 @@ inputs:
     default: 'latest'
   # consider using working-directory isntead
 runs:
-  using: "composite"
   steps:
     - run: pip install fb-sapp
       shell: bash

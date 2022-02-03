@@ -41,7 +41,7 @@ jobs:
       # https://github.com/actions/runner/issues/1300
       - id: sapp
         name: Run SAPP
-        uses: ./action.yml
+        uses: ./
 
       - name: Expose SARIF Results
         uses: actions/upload-artifact@v2
