@@ -20,6 +20,10 @@ inputs:
 runs:
   using: "composite"
   steps:
+    - run: ls -la
+      shell: bash
+    - run: pwd
+      shell: bash
     - run: pip install fb-sapp
       shell: bash
     - run: sapp update warning-codes ${{inputs.taint-metadata}}
