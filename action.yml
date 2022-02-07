@@ -5,12 +5,14 @@ inputs:
   filters-directory:
     description: Path to the filters directory containing filters. Default is the filter's directory in pyre-check
     default: '~/lib/pyre_check/pysa_filters'
-  taint-output:
-    description: Path to the taint-output file derived from the static analyzer. Default is ./taint-output.json
-    default: './taint-output.json'
-  taint-metadata:
-    description: Path to the taint-metadata file derived from the static analyzer. Default is ./taint-metadata.json
-    default: './taint-metadata.json'
+  # taint-output:
+  #   description: Path to the taint-output file derived from the static analyzer. Default is ./taint-output.json
+  #   default: './taint-output.json'
+  # taint-metadata:
+  #   description: Path to the taint-metadata file derived from the static analyzer. Default is ./taint-metadata.json
+  #   default: './taint-metadata.json'
+  artifact-handle:
+    description: name of handle used to save static analysis results
   version:
     description: Version of sapp to be used. Default is latest.
     default: 'latest'
@@ -19,15 +21,18 @@ inputs:
 runs:
   using: "composite"
   steps:
+    - uses: actions/download-artifact@v2
+      with:
+        name: ${{inputs.artifact-handle}}
     - run: ls -la
       shell: bash
     - run: pwd
       shell: bash
     - run: pip install fb-sapp
       shell: bash
-    - run: sapp update warning-codes ${{inputs.taint-metadata}}
+    - run: sapp update warning-codes ${{inputs.artifact-handle}}/taint-metadata.json
       shell: bash
-    - run: sapp analyze ${{inputs.taint-output}}
+    - run: sapp analyze ${{inputs.artifact-handle}}/taint-output.json
       shell: bash
     - id: sarif-output
       run: sapp filter issues 1 ${{inputs.filters-directory}} --output-format sarif > sarif.json

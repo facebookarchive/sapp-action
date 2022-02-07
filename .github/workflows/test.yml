@@ -31,8 +31,14 @@ jobs:
         # TODO replace with Pysa action later
         run: |
           cd pyre-check/documentation/deliberately_vulnerable_flask_app
-          pyre analyze --no-verify --save-results-to=.
+          pyre analyze --no-verify --save-results-to=./pysa-output
           ls -la
+
+      - uses: actions/upload-artifact@v2
+        with:
+          name: pysa-results
+          path: ./pysa-output
+          if-no-files-found: error
 
       - id: sapp
         name: Run SAPP
