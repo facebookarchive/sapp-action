@@ -18,6 +18,7 @@ inputs:
   # consider using working-directory isntead
   # https://github.com/actions/runner/issues/834
 runs:
+  using: "composite"
   steps:
     - run: pip install fb-sapp
       shell: bash

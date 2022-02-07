@@ -1,6 +1,7 @@
 name: sapp
 
 runs:
+  using: "composite"
   steps:
     - run: ls
       shell: bash
