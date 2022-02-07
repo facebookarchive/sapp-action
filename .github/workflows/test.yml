@@ -5,8 +5,9 @@ on:
     branches: [ main ]
   workflow_dispatch:
 
-# A workflow run is made up of one or more jobs that can run sequentially or in parallel
 jobs:
+# runs:
+  # using: "composite"
   test:
     # The type of runner that the job will run on
     runs-on: ubuntu-latest
