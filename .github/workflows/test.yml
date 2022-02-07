@@ -37,15 +37,15 @@ jobs:
       - uses: actions/upload-artifact@v2
         with:
           name: pysa-results
-          path: ./pysa-output
+          # TODO replace with Pysa action later
+          path: ./pyre-check/documentation/deliberately_vulnerable_flask_app/pysa-output
           if-no-files-found: error
 
       - id: sapp
         name: Run SAPP
         uses: ./
         with:
-          taint-output: './taint-output.json'
-          taint-metadata: './taint-metadata.json'
+          artifact-handle: pysa-results
 
       - name: Expose SARIF Results
         uses: actions/upload-artifact@v2
