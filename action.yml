@@ -3,17 +3,16 @@ description: Run sapp to convert static analysis results to SARIF format.
 
 inputs:
   filters-directory:
-    # description: Path to the filters directory containing filters. Default is the filter's directory in pyre-check
-    required: false
+    description: Path to the filters directory containing filters. Default is the filter's directory in pyre-check
     default: '~/lib/pyre_check/pysa_filters'
   taint-output:
-    # description: Path to the taint-output file derived from the static analyzer. Default is ./taint-output.json
+    description: Path to the taint-output file derived from the static analyzer. Default is ./taint-output.json
     default: './taint-output.json'
   taint-metadata:
-    # description: Path to the taint-metadata file derived from the static analyzer. Default is ./taint-metadata.json
+    description: Path to the taint-metadata file derived from the static analyzer. Default is ./taint-metadata.json
     default: './taint-metadata.json'
   version:
-    # description: Version of sapp to be used. Default is latest.
+    description: Version of sapp to be used. Default is latest.
     default: 'latest'
   # consider using working-directory isntead
   # https://github.com/actions/runner/issues/834
