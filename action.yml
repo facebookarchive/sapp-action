@@ -16,7 +16,6 @@ inputs:
   version:
     description: Version of sapp to be used. Default is latest.
     default: 'latest'
-  # consider using working-directory isntead
   # https://github.com/actions/runner/issues/834
 runs:
   using: "composite"
@@ -27,15 +26,11 @@ runs:
         path: ./
     - run: ls -la
       shell: bash
-    - run: pwd
-      shell: bash
     - run: if [ ${{inputs.version}} = "latest" ]; then pip install fb-sapp; else pip install fb-sapp==${{inputs.version}}; fi
       shell: bash
-    # - run: pip install fb-sapp
-    #   shell: bash
-    - run: sapp update warning-codes ${{inputs.artifact-handle}}/taint-metadata.json
+    - run: sapp update warning-codes ./taint-metadata.json
       shell: bash
-    - run: sapp analyze ${{inputs.artifact-handle}}/taint-output.json
+    - run: sapp analyze ./taint-output.json
       shell: bash
     - id: sarif-output
       run: sapp filter issues 1 ${{inputs.filters-directory}} --output-format sarif > sarif.json
