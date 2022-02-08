@@ -34,7 +34,7 @@ jobs:
           pyre analyze --no-verify --save-results-to=./pysa-output
           ls -la
 
-      - name: Saving Pysa results
+      - name: Saving Pysa results for SAPP
         uses: actions/upload-artifact@v2
         with:
           name: pysa-results

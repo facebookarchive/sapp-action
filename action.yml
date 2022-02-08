@@ -10,14 +10,6 @@ inputs:
   filters-directory:
     description: Path to the filters directory containing your custom SAPP filters
     required: false
-  tool:
-    type: choice
-    # TODO
-    description: static analysis tool
-    required: true
-    options:
-      - pysa
-      - mariana-trench
   artifact-handle:
     # TODO
     description: name of handle used to save static analysis results
@@ -29,20 +21,46 @@ inputs:
 runs:
   using: "composite"
   steps:
-    - uses: actions/download-artifact@v2
+    - name: Retrieve static analysis results
+      uses: actions/download-artifact@v2
       with:
         name: ${{inputs.artifact-handle}}
         path: ./
       # TODO fill in
-    - run: if [ ${{inputs.version}} = "latest" ]; then pip install fb-sapp; else pip install fb-sapp==${{inputs.version}}; fi
+
+    - name: Install SAPP
+      run: if [ ${{inputs.version}} = "latest" ]; then pip install fb-sapp; else pip install fb-sapp==${{inputs.version}}; fi
       shell: bash
-    - run: sapp update warning-codes ./taint-metadata.json
+
+    - name: Set up SAPP
+      run: sapp update warning-codes ./taint-metadata.json
       shell: bash
-    - run: sapp analyze ./taint-output.json
+
+    - name: Ingest Pysa results
+      run: sapp analyze ./taint-output.json
       shell: bash
-      # TODO allow custom filter directories to be submitted
-    - run: sapp filter issues 1 ${{env.LD_LIBRARY_PATH}}/pyre_check/pysa_filters --output-format sarif > sarif.json
+
+    - name: Set up to include default filters
+      if:  ${{inputs.include-default-filters}}
+      run: |
+        mkdir filters
+        cp -r ${{env.LD_LIBRARY_PATH}}/pyre_check/pysa_filters filters
+        ls -la filters
       shell: bash
+
+    - name: Set up to include custom filters
+      if: ${{inputs.filters-directory != ''}}
+      run: |
+        [ ! -d ${{inputs.filters-directory}} ] && exit 1
+        mkdir -p filters
+        cp -r ${{inputs.filters-directory}} filters
+        ls -la filters
+      shell: bash
+
+    - name: Filter Pysa results
+      run: sapp filter issues 1 filters --output-format sarif > sarif.json
+      shell: bash
+
     - name: Saving filtered results in SARIF
       uses: actions/upload-artifact@v2
       with:
