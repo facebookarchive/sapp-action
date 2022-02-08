@@ -2,21 +2,30 @@ name: sapp
 description: Run sapp to convert static analysis results to SARIF format.
 
 inputs:
+  include-default-filters:
+    # TODO
+    description: include default filters with static analysis tool
+    required: true
+    type: boolean
   filters-directory:
-    description: Path to the filters directory containing filters. Default is the filter's directory in pyre-check
-    default: '~/lib/pyre_check/pysa_filters'
-  # taint-output:
-  #   description: Path to the taint-output file derived from the static analyzer. Default is ./taint-output.json
-  #   default: './taint-output.json'
-  # taint-metadata:
-  #   description: Path to the taint-metadata file derived from the static analyzer. Default is ./taint-metadata.json
-  #   default: './taint-metadata.json'
+    description: Path to the filters directory containing your custom SAPP filters
+    required: false
+  tool:
+    type: choice
+    # TODO
+    description: static analysis tool
+    required: true
+    options:
+      - pysa
+      - mariana-trench
   artifact-handle:
+    # TODO
     description: name of handle used to save static analysis results
+    required: true
   version:
     description: Version of sapp to be used. Default is latest.
     default: 'latest'
-  # https://github.com/actions/runner/issues/834
+    required: false
 runs:
   using: "composite"
   steps:
@@ -24,20 +33,19 @@ runs:
       with:
         name: ${{inputs.artifact-handle}}
         path: ./
-    - run: ls -la /opt/hostedtoolcache/Python/3.10.2/x64/lib
-      shell: bash
-    - run: ls -la /opt/hostedtoolcache/Python/3.10.2/x64/lib/pyre_check
-      shell: bash
+      # TODO fill in
     - run: if [ ${{inputs.version}} = "latest" ]; then pip install fb-sapp; else pip install fb-sapp==${{inputs.version}}; fi
       shell: bash
     - run: sapp update warning-codes ./taint-metadata.json
       shell: bash
     - run: sapp analyze ./taint-output.json
       shell: bash
-    - id: sarif-output
-      run: sapp filter issues 1 ${{inputs.filters-directory}} --output-format sarif > sarif.json
+      # TODO allow custom filter directories to be submitted
+    - run: sapp filter issues 1 ${{env.LD_LIBRARY_PATH}}/pyre_check/pysa_filters --output-format sarif > sarif.json
       shell: bash
-
-
-# https://stackoverflow.com/questions/66216251/publish-github-action-to-marketplace-unexpected-value-steps
-# https://github.com/actions/runner/issues/1593
+    - name: Saving filtered results in SARIF
+      uses: actions/upload-artifact@v2
+      with:
+        name: sarif-results
+        path: sarif.json
+        if-no-files-found: error

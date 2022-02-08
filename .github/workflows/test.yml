@@ -34,25 +34,32 @@ jobs:
           pyre analyze --no-verify --save-results-to=./pysa-output
           ls -la
 
-      - uses: actions/upload-artifact@v2
+      - name: Saving Pysa results
+        uses: actions/upload-artifact@v2
         with:
           name: pysa-results
           # TODO replace with Pysa action later
           path: ./pyre-check/documentation/deliberately_vulnerable_flask_app/pysa-output
           if-no-files-found: error
 
-      - id: sapp
-        name: Run SAPP
+      - name: Run SAPP
         uses: ./
         with:
           artifact-handle: pysa-results
+          include-default-filters: true
+          tool: pysa
+
+      - name: Retrieve Pysa results in SARIF
+        uses: actions/download-artifact@v2
+        with:
+          name: sarif-results
+          path: ./
 
       - name: Expose SARIF Results
         uses: actions/upload-artifact@v2
         with:
           name: SARIF Results
-          # path: sarif.json
-          path: ${{ steps.sapp.outputs.sarif-output }}
+          path: sarif.json
 
       - name: Upload SARIF Results
         uses: github/codeql-action/upload-sarif@v1
