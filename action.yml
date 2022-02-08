@@ -24,7 +24,9 @@ runs:
       with:
         name: ${{inputs.artifact-handle}}
         path: ./
-    - run: ls -la
+    - run: ls -la /opt/hostedtoolcache/Python/3.10.2/x64/lib
+      shell: bash
+    - run: ls -la /opt/hostedtoolcache/Python/3.10.2/x64/lib/pyre_check
       shell: bash
     - run: if [ ${{inputs.version}} = "latest" ]; then pip install fb-sapp; else pip install fb-sapp==${{inputs.version}}; fi
       shell: bash
