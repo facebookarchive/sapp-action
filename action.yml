@@ -43,6 +43,7 @@ runs:
     - name: Set up to include default filters
       if: ${{inputs.include-default-filters}}
       run: |
+        echo ${{inputs.include-default-filters}}
         mkdir filters
         cp -r ${{env.LD_LIBRARY_PATH}}/pyre_check/pysa_filters filters
         ls -la filters
