@@ -10,7 +10,6 @@ jobs:
     runs-on: ubuntu-latest
 
     steps:
-      # Checks-out your repository under $GITHUB_WORKSPACE, so your job can access it
       - name: Check out sapp-action repo
         uses: actions/checkout@v2
         with:
@@ -28,17 +27,14 @@ jobs:
           . ./setup.sh
 
       - name: Run Pysa
-        # TODO replace with Pysa action later
         run: |
           cd test/pyre-check/documentation/deliberately_vulnerable_flask_app
           pyre analyze --no-verify --save-results-to=./pysa-output
-          ls -la
 
       - name: Saving Pysa results for SAPP
         uses: actions/upload-artifact@v2
         with:
           name: pysa-results
-          # TODO replace with Pysa action later
           path: ./test/pyre-check/documentation/deliberately_vulnerable_flask_app/pysa-output
           if-no-files-found: error
 
