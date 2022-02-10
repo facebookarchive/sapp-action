@@ -41,7 +41,7 @@ runs:
       shell: bash
 
     - name: Set up to include default filters
-      if:  ${{inputs.include-default-filters}}
+      if: ${{inputs.include-default-filters}}
       run: |
         mkdir filters
         cp -r ${{env.LD_LIBRARY_PATH}}/pyre_check/pysa_filters filters
@@ -58,7 +58,15 @@ runs:
       shell: bash
 
     - name: Filter Pysa results
+      if: ${{inputs.include-default-filters}} || ${{inputs.filters-directory != ''}}
       run: sapp filter issues 1 filters --output-format sarif > sarif.json
+      shell: bash
+
+    - name: Convert Pysa results to SARIF
+      if: ${{!inputs.include-default-filters}} && ${{inputs.filters-directory == ''}}
+      run: |
+        mkdir nofilters
+        sapp filter issues 1 nofilters --output-format sarif > sarif.json
       shell: bash
 
     - name: Saving filtered results in SARIF
