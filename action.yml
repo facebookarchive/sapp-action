@@ -5,7 +5,7 @@ inputs:
   include-default-filters:
     # TODO
     description: include default filters with static analysis tool
-    required: true
+    default: true
     type: boolean
   filters-directory:
     description: Path to the filters directory containing your custom SAPP filters
@@ -60,13 +60,6 @@ runs:
     - name: Filter Pysa results
       if: ${{inputs.include-default-filters}} || ${{inputs.filters-directory != ''}}
       run: sapp filter issues 1 filters --output-format sarif > sarif.json
-      shell: bash
-
-    - name: Convert Pysa results to SARIF
-      if: ${{!inputs.include-default-filters}} && ${{inputs.filters-directory == ''}}
-      run: |
-        mkdir nofilters
-        sapp filter issues 1 nofilters --output-format sarif > sarif.json
       shell: bash
 
     - name: Saving filtered results in SARIF
