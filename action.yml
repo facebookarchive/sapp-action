@@ -44,10 +44,8 @@ runs:
       # https://github.com/actions/runner/issues/1483
       if: ${{inputs.include-default-filters == 'true'}}
       run: |
-        echo ${{inputs.include-default-filters}}
         mkdir filters
         cp -r ${{env.LD_LIBRARY_PATH}}/pyre_check/pysa_filters filters
-        ls -la filters
       shell: bash
 
     - name: Set up to include custom filters
@@ -60,7 +58,7 @@ runs:
       shell: bash
 
     - name: Filter Pysa results
-      if: ${{inputs.include-default-filters}} || ${{inputs.filters-directory != ''}}
+      if: ${{inputs.include-default-filters == 'true' || inputs.filters-directory != ''}}
       run: sapp filter issues 1 filters --output-format sarif > sarif.json
       shell: bash
 
