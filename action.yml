@@ -18,6 +18,7 @@ inputs:
     description: Version of sapp to be used. Default is latest.
     default: 'latest'
     required: false
+
 runs:
   using: "composite"
   steps:
@@ -26,7 +27,6 @@ runs:
       with:
         name: ${{inputs.artifact-handle}}
         path: ./
-      # TODO fill in
 
     - name: Install SAPP
       run: if [ ${{inputs.version}} = "latest" ]; then pip install fb-sapp; else pip install fb-sapp==${{inputs.version}}; fi
@@ -41,7 +41,8 @@ runs:
       shell: bash
 
     - name: Set up to include default filters
-      if: ${{inputs.include-default-filters}}
+      # https://github.com/actions/runner/issues/1483
+      if: ${{inputs.include-default-filters == 'true'}}
       run: |
         echo ${{inputs.include-default-filters}}
         mkdir filters
