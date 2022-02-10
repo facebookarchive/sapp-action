@@ -24,13 +24,13 @@ jobs:
 
       - name: Set up deliberately_vulnerable_flask_app
         run: |
-          cd pyre-check/documentation/deliberately_vulnerable_flask_app
+          cd test/pyre-check/documentation/deliberately_vulnerable_flask_app
           . ./setup.sh
 
       - name: Run Pysa
         # TODO replace with Pysa action later
         run: |
-          cd pyre-check/documentation/deliberately_vulnerable_flask_app
+          cd test/pyre-check/documentation/deliberately_vulnerable_flask_app
           pyre analyze --no-verify --save-results-to=./pysa-output
           ls -la
 
@@ -39,14 +39,15 @@ jobs:
         with:
           name: pysa-results
           # TODO replace with Pysa action later
-          path: ./pyre-check/documentation/deliberately_vulnerable_flask_app/pysa-output
+          path: ./test/pyre-check/documentation/deliberately_vulnerable_flask_app/pysa-output
           if-no-files-found: error
 
       - name: Run SAPP
         uses: ./
         with:
           artifact-handle: pysa-results
-          include-default-filters: false
+          include-default-filters: true
+          filters-directory: ./test/sapp-filters
 
       - name: Retrieve Pysa results in SARIF
         uses: actions/download-artifact@v2
