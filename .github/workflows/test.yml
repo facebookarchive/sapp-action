@@ -1,4 +1,4 @@
-name: Regression Testing
+name: Testing SAPP GitHub Action with Pysa
 
 on:
   push:
@@ -6,18 +6,18 @@ on:
   workflow_dispatch:
 
 jobs:
-# runs:
-  # using: "composite"
   test:
-    # The type of runner that the job will run on
     runs-on: ubuntu-latest
 
     steps:
       # Checks-out your repository under $GITHUB_WORKSPACE, so your job can access it
-      - uses: actions/checkout@v2
+      - name: Check out sapp-action repo
+        uses: actions/checkout@v2
         with:
           submodules: true
-      - uses: actions/setup-python@v2
+
+      - name: Set up Python
+        uses: actions/setup-python@v2
 
       - name: Set up Pyre
         run: pip install pyre-check
@@ -46,8 +46,7 @@ jobs:
         uses: ./
         with:
           artifact-handle: pysa-results
-          include-default-filters: true
-          tool: pysa
+          include-default-filters: false
 
       - name: Retrieve Pysa results in SARIF
         uses: actions/download-artifact@v2
