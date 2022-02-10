@@ -47,7 +47,7 @@ jobs:
         with:
           artifact-handle: pysa-results
           include-default-filters: true
-          filters-directory: ./test/sapp-filters
+          filters-directory: ./test/custom-filters
 
       - name: Retrieve Pysa results in SARIF
         uses: actions/download-artifact@v2

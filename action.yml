@@ -54,7 +54,6 @@ runs:
         [ ! -d ${{inputs.filters-directory}} ] && exit 1
         mkdir -p filters
         cp -r ${{inputs.filters-directory}} filters
-        ls -la filters
       shell: bash
 
     - name: Filter Pysa results
