@@ -38,12 +38,16 @@ jobs:
           path: ./test/pyre-check/documentation/deliberately_vulnerable_flask_app/pysa-output
           if-no-files-found: error
 
+      - name: Set up to SAPP filters directory
+        run: |
+          cp -r ./test/custom-filters ${{env.LD_LIBRARY_PATH}}/pyre_check/pysa_filters
+        shell: bash
+
       - name: Run SAPP
         uses: ./
         with:
           artifact-handle: pysa-results
-          include-default-filters: true
-          filters-directory: ./test/custom-filters
+          filters-directory: ${{env.LD_LIBRARY_PATH}}/pyre_check/pysa_filters
 
       - name: Retrieve Pysa results in SARIF
         uses: actions/download-artifact@v2
@@ -57,6 +61,7 @@ jobs:
           name: SARIF Results
           path: sarif.json
 
+      # TODO should we be uploading SARIF results in sapp action instead?
       - name: Upload SARIF Results
         uses: github/codeql-action/upload-sarif@v1
         with:

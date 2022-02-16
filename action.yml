@@ -2,17 +2,11 @@ name: sapp
 description: Run sapp to convert static analysis results to SARIF format.
 
 inputs:
-  include-default-filters:
-    # TODO
-    description: include default filters with static analysis tool
-    default: true
-    type: boolean
   filters-directory:
     description: Path to the filters directory containing your custom SAPP filters
-    required: false
+    required: true
   artifact-handle:
-    # TODO
-    description: name of handle used to save static analysis results
+    description: Artifact handle name used to save static analysis results
     required: true
   version:
     description: Version of sapp to be used. Default is latest.
@@ -22,6 +16,11 @@ inputs:
 runs:
   using: "composite"
   steps:
+    - name: Install Python
+      uses: actions/setup-python@v2
+      with:
+        python-version: '>=3.7'
+
     - name: Retrieve static analysis results
       uses: actions/download-artifact@v2
       with:
@@ -29,7 +28,12 @@ runs:
         path: ./
 
     - name: Install SAPP
-      run: if [ ${{inputs.version}} = "latest" ]; then pip install fb-sapp; else pip install fb-sapp==${{inputs.version}}; fi
+      run: |
+        if [ ${{inputs.version}} = "latest" ]; then
+          pip install fb-sapp
+        else
+          pip install fb-sapp==${{inputs.version}}
+        fi
       shell: bash
 
     - name: Set up SAPP
@@ -40,25 +44,13 @@ runs:
       run: sapp analyze ./taint-output.json
       shell: bash
 
-    - name: Set up to include default filters
-      # https://github.com/actions/runner/issues/1483
-      if: ${{inputs.include-default-filters == 'true'}}
-      run: |
-        mkdir filters
-        cp -r ${{env.LD_LIBRARY_PATH}}/pyre_check/pysa_filters filters
-      shell: bash
-
-    - name: Set up to include custom filters
-      if: ${{inputs.filters-directory != ''}}
-      run: |
-        [ ! -d ${{inputs.filters-directory}} ] && exit 1
-        mkdir -p filters
-        cp -r ${{inputs.filters-directory}} filters
-      shell: bash
-
     - name: Filter Pysa results
-      if: ${{inputs.include-default-filters == 'true' || inputs.filters-directory != ''}}
-      run: sapp filter issues 1 filters --output-format sarif > sarif.json
+      run: |
+        if [ -d "${{inputs.filters-directory}}" ] && [ -n "$(ls -A "${{inputs.filters-directory}}")" ]; then
+          sapp filter issues 1 ${{inputs.filters-directory}} --output-format sarif > sarif.json
+        else
+          echo "${{inputs.filters-directory}} must exist and cannot be empty"
+        fi
       shell: bash
 
     - name: Saving filtered results in SARIF
