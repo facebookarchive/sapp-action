@@ -40,11 +40,11 @@ runs:
       run: sapp update warning-codes ./taint-metadata.json
       shell: bash
 
-    - name: Ingest Pysa results
+    - name: Ingest static analysis results
       run: sapp analyze ./taint-output.json
       shell: bash
 
-    - name: Filter Pysa results
+    - name: Filter static analysis results
       run: |
         if [ -d "${{inputs.filters-directory}}" ] && [ -n "$(ls -A "${{inputs.filters-directory}}")" ]; then
           sapp filter issues 1 ${{inputs.filters-directory}} --output-format sarif > sarif.json
