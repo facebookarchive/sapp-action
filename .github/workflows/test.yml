@@ -1,0 +1,52 @@
+name: Testing SAPP Action with Pysa
+
+on:
+  push:
+    branches: [ main ]
+  pull_request:
+    branches: [ main ]
+  workflow_dispatch:
+
+jobs:
+  test:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Check out sapp-action repo
+        uses: actions/checkout@v2
+        with:
+          submodules: true
+
+      - name: Set up Python
+        uses: actions/setup-python@v2
+
+      - name: Set up Pyre
+        run: pip install pyre-check
+
+      - name: Set up deliberately_vulnerable_flask_app
+        run: |
+          cd test/pyre-check/documentation/deliberately_vulnerable_flask_app
+          . ./setup.sh
+
+      - name: Run Pysa
+        run: |
+          cd test/pyre-check/documentation/deliberately_vulnerable_flask_app
+          pyre analyze --no-verify --save-results-to=./pysa-output
+
+      - name: Saving Pysa results for SAPP
+        uses: actions/upload-artifact@v2
+        with:
+          name: pysa-results
+          path: ./test/pyre-check/documentation/deliberately_vulnerable_flask_app/pysa-output
+          if-no-files-found: error
+
+      - name: Set up to SAPP filters directory
+        run: |
+          cp -r ./test/custom-filters ${{env.LD_LIBRARY_PATH}}/pyre_check/pysa_filters
+        shell: bash
+
+      - name: Run SAPP
+        uses: ./
+        with:
+          artifact-handle: pysa-results
+          filters-directory: ${{env.LD_LIBRARY_PATH}}/pyre_check/pysa_filters
